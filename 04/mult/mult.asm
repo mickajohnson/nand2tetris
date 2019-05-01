@@ -6,22 +6,51 @@
 // Multiplies R0 and R1 and stores the result in R2.
 // (R0, R1, R2 refer to RAM[0], RAM[1], and RAM[2], respectively.)
 
+// // clear sum
+//     @R2
+//     M=0
+
+// // initialize iterator
+//     @i
+//     M=0
+
+// (LOOP)
+//     @R0
+//     D=M
+//     @i
+//     M=M+1 // i++
+//     D=D-M
+//     @END
+//     D;JLT // exit loop if i-R0 < 0
+
+//     // Meat of loop
+//     @R1
+//     D=M
+//     @R2
+//     M=D+M // sum = sum + adder
+
+//     @LOOP
+//     0;JMP
+
+// (END)
+//     @END
+//     0;JMP
+
 // clear sum
     @R2
     M=0
 
 // initialize iterator
     @i
-    M=0
+    M=1
 
 (LOOP)
     @R0
-    D=M
+    D=M // set d to our multiplier
     @i
-    M=M+1 // i++
     D=D-M
     @END
-    D;JLT // exit loop if i-R0 < 0
+    D;JLT // exit loop if iterator is greater than multiplier < 0
 
     // Meat of loop
     @R1
@@ -29,6 +58,8 @@
     @R2
     M=D+M // sum = sum + adder
 
+    @i
+    M=M+1 // i++
     @LOOP
     0;JMP
 
