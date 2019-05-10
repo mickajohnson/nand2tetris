@@ -19,13 +19,13 @@
     @KEY_PRESSED
     D;JGT
     @KEY_UNPRESSED
-    @LOOP
     0;JMP
 
 (KEY_PRESSED)
     // set screen address to new var so dont mutate sacred var
     @SCREEN
     D=A
+    M=-1
     @address
     M=D
 
@@ -55,6 +55,7 @@
     // set screen address to new var so dont mutate sacred var
     @SCREEN
     D=A
+     M=0
     @address
     M=D
 
