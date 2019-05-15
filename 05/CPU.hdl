@@ -39,5 +39,28 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-    // Put your code here:
+    Mux16(a=instruction, b=aluAOutput, sel=listenAALU, out=toA);
+    Not(in=instruction[15], out=Ainstruction);
+    Or(a=Ainstruction, b=instruction[5], out=saveA);
+    ARegister(in=toA, load=saveA, out=aRegisterVal, out[0..14]=addressM);
+    Mux16(a=aRegisterVal, b=inM, sel=instruction[12], out=AorM);
+    DRegister(in=aluDOutput, load=saveD, out=D);
+    ALU(x=D, y=AorM, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out=aluDOutput, out=outM, out=aluAOutput, zr=zr, ng=ng);
+    // filter alu output
+    And(a=instruction[15], b=instruction[3], out=writeM);
+    And(a=instruction[15], b=instruction[4], out=saveD);
+    And(a=instruction[15], b=instruction[5], out=listenAALU);
+
+
+    // if c instruction and a jump see if that jump is true and set load to true
+    And(a=instruction[2], b=ng, out=j1);
+    And(a=instruction[1], b=zr, out=j2);
+    Not(in=zr, out=notZr);
+    Not(in=ng, out=notNg);
+    And(a=notNg, b=notZr, out=positiveNumber);
+    And(a=positiveNumber, b=instruction[0], out=j3);
+    Or(a=j1, b=j2, out=j1OrJ2);
+    Or(a=j1OrJ2, b=j3, out=jump);
+    And(a=instruction[15], b=jump, out=defJump);
+    PC(in=aRegisterVal, load=defJump, inc=true, reset=reset, out[0..14]=pc);
 }
